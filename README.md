@@ -1,6 +1,6 @@
 # Epics_E-Learning
 
-#to install all dependencies
+#to install all dependencies inside server
 npm i
 
 #to start the server
