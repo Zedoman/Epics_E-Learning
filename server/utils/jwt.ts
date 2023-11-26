@@ -11,30 +11,30 @@ interface ITOkenOptiions{
     secure?: boolean;
 }
 
+ //parse environment var to integrate will fallback values
+ const accessTokenExpire = parseInt(process.env.ACCESS_TOKEN_EXPIRE || '300', 10);
+ const refreshTokenExpire = parseInt(process.env.REFRESH_TOKEN_EXPIRE || '300', 10);
+
+ //options for cookies
+ export const accessTokenOptions: ITOkenOptiions={
+     expires: new Date(Date.now()+accessTokenExpire*60*60*1000), //for 5 mins = 60 min sec 1000 milli
+     maxAge: accessTokenExpire*60*60*1000,
+     httpOnly: true,
+     sameSite: 'lax',
+ };
+export const refreshTokenOptions: ITOkenOptiions={
+     expires: new Date(Date.now()+refreshTokenExpire*24*60*60*1000),
+     maxAge: refreshTokenExpire*24*60*60*1000, //for 3days = 24 hrs 60 min 60 sec 1000 milli sec
+     httpOnly: true,
+     sameSite: 'lax',
+ };
+
 export const sendToken=(user:IUser, statusCode: number, res: Response)=>{
     const accessToken=user.SignAccessToken();
     const refreshToken=user.SignRefreshToken();
 
     //upload session to redis
     redis.set(user._id, JSON.stringify(user) as any);
-
-    //parse environment var to integrate will fallback values
-    const accessTokenExpire = parseInt(process.env.ACCESS_TOKEN_EXPIRE || '300', 10);
-    const refreshTokenExpire = parseInt(process.env.REFRESH_TOKEN_EXPIRE || '300', 10);
-
-    //options for cookies
-    const accessTokenOptions: ITOkenOptiions={
-        expires: new Date(Date.now()+accessTokenExpire*1000),
-        maxAge: accessTokenExpire*1000,
-        httpOnly: true,
-        sameSite: 'lax',
-    };
-    const refreshTokenOptions: ITOkenOptiions={
-        expires: new Date(Date.now()+refreshTokenExpire*1000),
-        maxAge: refreshTokenExpire*1000,
-        httpOnly: true,
-        sameSite: 'lax',
-    };
 
 
     //only set secure is true in production
