@@ -1,17 +1,18 @@
 import { countReset } from "console";
 import mongoose,{Document,Model,Schema} from "mongoose"
+import { IUser } from "./user.model";
 
 interface IComment extends Document{
-    user:object,
+    user:IUser,
     question:string,
     questionReplies:IComment[],
 }
 
 interface IReview extends Document{
-    user:object,
+    user:IUser,
     rating:number,
     comment:string,
-    commentReplies:IComment[];
+    commentReplies?:IComment[];
 }
 
 interface Ilink extends Document{
@@ -57,6 +58,7 @@ const reviewSchema = new Schema<IReview>({
     },
 
     comment:String,
+    commentReplies:[Object]
 
 })
 
@@ -146,7 +148,7 @@ const courseSchema = new Schema<ICourse>({
 
 
    
-});
+},{timestamps:true});
 
 const CourseModel:Model<ICourse> = mongoose.model("Course",courseSchema);
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { activateUser, getUserInfo, loginUser, logoutUser, registrationUser, socialAuth, updateAccessToken, updatePassword, updateProfilePicture, updateUserInfo } from '../controllers/user.controller';
+import { activateUser, getUserInfo, loginUser, logoutUser, registrationUser, socialAuth, updateAccessToken, updatePassword, updateProfilePicture, updateUserInfo, getAllUser, updateUserRole, deleteUser } from '../controllers/user.controller';
 import { authorizeRoles, isAuthenticated } from '../middleware/auth';
 
 
@@ -15,7 +15,26 @@ userRouter.post('/social-auth',socialAuth); //will get email name avatar from fr
 userRouter.put("/update-user-info",isAuthenticated,updateUserInfo); //if we want to change name or anythin
 userRouter.put("/update-user-password",isAuthenticated,updatePassword); //if forgot pass and reset it
 userRouter.put("/update-user-avatar",isAuthenticated,updateProfilePicture);
+userRouter.get(
+	'/get-users',
+	isAuthenticated,
+	authorizeRoles('admin'),
+	getAllUser
+);
 
+userRouter.put(
+	'/update-user',
+	isAuthenticated,
+	authorizeRoles('admin'),
+	updateUserRole
+);
+
+userRouter.delete(
+	'/delete-user/:id',
+	isAuthenticated,
+	authorizeRoles('admin'),
+	deleteUser
+);
 
 
 export default userRouter;
